@@ -1,0 +1,18 @@
+# Build NodeJS Express app using VSTS
+# https://docs.microsoft.com/vsts/pipelines/languages/javascript?view=vsts
+
+steps:
+- script: npm install
+- script: npm test
+- script: npm run build
+
+- task: archiveFiles@1
+  inputs:
+    rootFolder: $(Build.SourcesDirectory)
+    archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+
+- task: publishBuildArtifacts@1
+  inputs:
+    PathtoPublish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+    ArtifactName: drop
+    ArtifactType: Container
